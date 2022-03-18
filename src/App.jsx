@@ -1,15 +1,16 @@
 import React from "react";
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 const Vis = () => {
 	const { useRef, useEffect, useState } = React;
 	const mount = useRef(null);
 	const [isAnimating, setAnimating] = useState(true);
-	const controls = useRef(null);
+	const controlsAnimation = useRef(null);
 
 	useEffect(() => {
 		let width = mount.current.clientWidth;
 		let height = mount.current.clientHeight;
-		let frameId;	
+		let frameId;
 
 		const scene = new THREE.Scene();
 		const camera = new THREE.PerspectiveCamera(
@@ -31,6 +32,9 @@ const Vis = () => {
 		const renderScene = () => {
 			renderer.render(scene, camera);
 		};
+
+		const controls = new OrbitControls(camera, renderer.domElement);
+		controls.enableDamping = true;
 
 		const handleResize = () => {
 			width = mount.current.clientWidth;
@@ -64,7 +68,7 @@ const Vis = () => {
 		window.addEventListener("resize", handleResize);
 		start();
 
-		controls.current = { start, stop };
+		controlsAnimation.current = { start, stop };
 
 		return () => {
 			stop();
@@ -79,9 +83,9 @@ const Vis = () => {
 
 	useEffect(() => {
 		if (isAnimating) {
-			controls.current.start();
+			controlsAnimation.current.start();
 		} else {
-			controls.current.stop();
+			controlsAnimation.current.stop();
 		}
 	}, [isAnimating]);
 
